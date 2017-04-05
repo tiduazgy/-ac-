@@ -1,0 +1,47 @@
+
+import java.io.*;
+import java.util.*;
+public class Main {
+    public static void main(String[] args) {
+        Scanner input = new Scanner(System.in);
+        String start = input.nextLine();
+        String end = input.nextLine();
+        String[] dictinoary = input.nextLine().split(" ");
+        LinkedList<Node> queue = new LinkedList<>();
+        int minCount = getMinCount(start,end,dictinoary,queue);
+        System.out.println(minCount);
+
+    }
+    private static int getMinCount(String start,String end,String[] dictionary,LinkedList<Node> queue){
+        queue.offer(new Node(start,1));
+        while (!queue.isEmpty()){
+            Node cur = queue.poll();
+            if(cur.val.equals(end))return cur.count;
+            for (String word : dictionary){
+                int count = getCount(cur.val,word);
+                if(count == 1)queue.offer(new Node(word,cur.count+1));
+            }
+        }
+        return -1;
+    }
+    private static int getCount(String goal,String word){
+        int count = 0;
+        if(goal.length() != word.length())return -1;
+        else{
+            for(int i = 0;i < goal.length();i++){
+                if(goal.charAt(i) != word.charAt(i))count++;
+            }
+            return count;
+        }
+    }
+
+}
+
+class Node{
+    String val;
+    int count;
+    Node(String val,int count){
+        this.val = val;
+        this.count = count;
+    }
+}
