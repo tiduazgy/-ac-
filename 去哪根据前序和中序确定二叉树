@@ -1,0 +1,52 @@
+
+import java.io.*;
+import java.util.*;
+public class Main {
+    public static void main(String[] args) {
+        Scanner input = new Scanner(System.in);
+        int size = Integer.parseInt(input.nextLine());
+        String[] pre = (input.nextLine().split(" "));
+        String[] in= (input.nextLine().split(" "));
+
+        Node root = createTree(pre,in);
+
+        LinkedList<Node> queue = new LinkedList<>();
+        queue.offer(root);
+        Node cur;
+        while(!queue.isEmpty()){
+            cur = queue.poll();
+            System.out.print(cur.val);
+            if(cur.left != null)queue.offer(cur.left);
+            if(cur.right != null)queue.offer(cur.right);
+        }
+
+
+
+    }
+    private static Node createTree(String[] pre,String in[]){
+        if(pre == null || pre.length == 0 || in == null || in.length ==0)return null;
+        return helper(pre,0,in,0,in.length-1);
+
+    }
+
+    private static Node helper(String[] pre,int pres,String[] in,int ins,int ine){
+        if(ins > ine)return null;
+        Node root = new Node(pre[pres]);
+        if(ins == ine)return root;
+        int pivot = ins;
+        while(!in[pivot].equals(pre[pres]))pivot++;
+        root.left = helper(pre,pres+1,in,ins,pivot-1);
+        root.right = helper(pre,pres+1+pivot-ins,in,pivot+1,ine);
+        return root;
+    }
+
+
+}
+class Node{
+    String val;
+    Node left;
+    Node right;
+    public Node(String val){
+        this.val = val;
+    }
+}
