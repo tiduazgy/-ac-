@@ -1,0 +1,143 @@
+第一题：
+public int findFirstBadVersion(int n) {
+        if(n <= 0)return -1;
+        // write your code here
+        return helper(1,n);
+
+    }
+   private int helper(int start,int end){
+
+        int mid = start + (end - start+1) / 2;
+        if(!isBad(mid)){//如果没错
+            if(end == 1)return -1;//没错
+            if(isBad(mid + 1))return mid+1;
+            return helper(mid+1,end);
+        }
+        else {//如果错了
+            if(mid == 1)return 1;
+            if(!isBad(mid-1))return mid;
+            else return helper(start,mid-1);
+        }
+
+    }
+
+
+第二题
+    public ListNode mergeKLists(ListNode list1, ListNode list2) {
+        // write your code here
+        if(list1 == null)return list2;
+        if(list2 == null)return list1;
+        ListNode p1 = list1;
+        ListNode p2 = list2;
+        ListNode cur;
+        ListNode result;
+        if(p1.val < p2.val){
+            cur = p1;
+            p1 = p1.next;
+            result = p1;
+        }
+        else{
+            cur = p2;
+            p2 = p2.next;
+            result = p2;
+        }
+        while(p1 != null && p2 != null){
+            if(p1.val < p2.val){
+                cur.next = p1;
+                p1 = p1.next;
+            }
+            else{
+                cur.next = p2;
+                p2 = p2.next;
+            }
+            cur = cur.next;
+        }
+        if(p1 != null)cur.next = p1;
+        if(p2 != null)cur.next = p2;
+        return result;
+    }
+
+第三题
+public int[] twoSum(int[] a, int target) {
+        // write your code here
+         Arrays.sort(a);
+         for(int i = 0;i < a.length;i++){
+             int tar2 = target - a[i];
+             for(int j = i + 1;j < a.length;j++){
+                 if(a[j] == tar2)return new int[]{i,j};
+                 if(a[j] > tar2)break;
+             }
+         }
+         return null;
+    }
+
+
+第四题
+import java.io.*;
+import java.util.*;
+import java.util.concurrent.*;
+
+public class Main {
+    private static final int MAX = 100;
+    private static LinkedBlockingDeque<String> buffer = new LinkedBlockingDeque<>();
+
+    public static void main(String[] args) {
+        ExecutorService executor = Executors.newCachedThreadPool();
+        for(int i = 0;i < 3;i++){
+            executor.execute(new Producer(buffer));
+        }
+        for(int i = 0;i < 5;i++){
+            executor.execute(new Consumer(buffer));
+        }
+        executor.shutdown();
+    }
+    static class Consumer implements Runnable{
+        private LinkedBlockingDeque<String> buffer;
+        Consumer(LinkedBlockingDeque<String> buffer){
+            this.buffer = buffer;
+        }
+        @Override
+        public void run(){
+            while(true){
+                try{
+                    if(buffer.size() == 0){
+                    }
+                    else{
+                        System.out.println(buffer.poll());
+                        Thread.sleep(500);
+                    }
+                }
+                catch (InterruptedException ex){
+                    ex.printStackTrace();
+                }
+
+            }
+        }
+    }
+
+    static class Producer implements Runnable {
+        private LinkedBlockingDeque<String> buffer;
+        Producer(LinkedBlockingDeque<String> buffer){
+            this.buffer = buffer;
+        }
+        @Override
+        public void run() {
+            while (true) {
+                while (true){
+                    try{
+                        if(buffer.size() == MAX){}
+                        else {
+                            buffer.offer(Thread.currentThread().getId()+" "+System.currentTimeMillis()+" "+"FinalFantasy");
+                            Thread.sleep(500);
+                        }
+                    }
+                    catch (InterruptedException ex){
+                        ex.printStackTrace();
+                    }
+                }
+            }
+        }
+    }
+}
+
+
